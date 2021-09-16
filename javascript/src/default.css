@@ -1,0 +1,64 @@
+
+
+
+.picker {
+  position: relative !important;
+}
+
+.btn-picker {
+  padding: 3px 6px;
+  color: #333;
+  background-color: #fff;
+  border: 1px solid #ddd;
+
+}
+
+.btn-picker.active {
+  color: #333;
+  background-color: #e6e6e6;
+  background-image: none;
+  border-color: #adadad;
+}
+
+.picker-widget-ctrl {
+  font: 12px/20px "Helvetica Neue", Arial, sans-serif;
+}
+
+
+
+.picker-widget-ctrl-group {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.5;
+  transition: opacity 0.2s ease-out;
+}
+
+.picker-widget-ctrl-group:hover {
+  opacity: 1;
+  transition: opacity 0.1s ease-in;
+}
+
+.picker-widget-ctrl {
+  background: transparent;
+  padding: 0px;
+  pointer-events: all;
+  cursor: auto;
+}
+
+.picker-widget-ctrl-top-left { top: 10px; left: 10px; }
+.picker-widget-ctrl-top-right { top: 10px; right: 10px; }
+.picker-widget-ctrl-bottom-left { bottom: 10px; left: 10px; }
+.picker-widget-ctrl-bottom-right { bottom: 10px; right: 10px; }
+
+.legend ul {
+  padding: 0;
+  margin-bottom: 0;
+}
+
+.legend li {
+  list-style-type: none;
+  margin: 0 0 8px 0;
+  display: flex;
+  vertical-align: middle;
+}

@@ -1,0 +1,9 @@
+dependencies:
+  - name: picker
+    version: 0.2.5
+    src: htmlwidgets/lib/widget
+    # script: deckgl-widget.js
+    # script: bundle-dev.js
+    script: picker.min.js
+    # stylesheet: deckgl-widget.css
+    all_files: false

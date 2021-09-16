@@ -1,0 +1,14 @@
+Package: picker
+Title: Pick Data Points From Deck.gl Scatterplot
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Alex",
+           family = "Pickering",
+           role = c("aut", "cre"),
+           email = "alexvpickering@gmail.com")
+Description: Pick data using a nebula.gl lasso selector from a deck.gl scatterplot.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
