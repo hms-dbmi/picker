@@ -4,12 +4,14 @@
 \alias{update_picker}
 \title{Send commands to a picker instance in a \code{Shiny} app}
 \usage{
-update_picker(proxy, view_state)
+update_picker(proxy, view_state = NULL, colors = NULL)
 }
 \arguments{
 \item{proxy}{picker proxy object}
 
-\item{...}{unused}
+\item{view_state}{view state from other picker input (optional).}
+
+\item{colors}{vector of colors (optional).}
 }
 \description{
 Send commands to a picker instance in a \code{Shiny} app

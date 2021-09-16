@@ -59,7 +59,7 @@ HTMLWidgets.widget({
     // define shared variables for this instance
     // =========================================
 
-    var coords, xFrom, yFrom, colors, labels, labelCoords, scatterPlotLayerProps, textLayerProps, deckProps;
+    var coords, xFrom, yFrom, labels, labelCoords, scatterPlotLayerProps, textLayerProps, deckProps;
     var mar = 10;
     
     const getCursorView = ({isDragging}) => isDragging ? 'grabbing' : 'default';
@@ -131,12 +131,13 @@ HTMLWidgets.widget({
 
       const layers = [
         new ScatterplotLayer({
+          id: 'scatterplot',
           data: coords,
           coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
           getPosition: d => [d.x, d.y],
-          getFillColor: (d, { index }) => colors[index],
+          getFillColor: (d, { index }) => deckgl.colors[index],
           updateTriggers: {
-            getFillColor: colors,
+            getFillColor: deckgl.colors,
             getTooltip: labels,
             getPosition: coords,
           },
@@ -225,7 +226,9 @@ HTMLWidgets.widget({
 
       // allow updates to colors and labels without changing data
       // see https://deck.gl/docs/developer-guide/performance#use-updatetriggers
-      colors = x.colors.map((color) => convertColor(color));
+      deckgl.colors = x.colors.map((color) => convertColor(color));
+      deckgl.render = render;
+
       labels = x.labels;
       scatterPlotLayerProps = x.scatterPlotLayerProps;
       textLayerProps = x.textLayerProps;
@@ -238,13 +241,21 @@ HTMLWidgets.widget({
     const getDeck = () => deckgl;
 
     if (HTMLWidgets.shinyMode) {
-      Shiny.addCustomMessageHandler('proxythis', function({id, initialViewState }) {
+      Shiny.addCustomMessageHandler('proxythis', function(obj) {
 
         // get correct HTMLWidget deck instance
-        const deck = getWidget(id).getDeck();
+        const deck = getWidget(obj.id).getDeck();
 
         // update viewState
-        deck.setProps({ initialViewState: { ...INITIAL_VIEW_STATE, ...initialViewState } });
+        if (obj.initialViewState !== null) {
+          deck.setProps({ initialViewState: {...INITIAL_VIEW_STATE, ...obj.initialViewState} });
+        }
+
+        if (obj.colors !== null) {
+          deck.colors = obj.colors.map((color) => convertColor(color));
+          deck.render();
+        }
+        
       });
     }
     

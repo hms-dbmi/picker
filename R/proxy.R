@@ -30,17 +30,18 @@ picker_proxy <- function(shinyId, session = shiny::getDefaultReactiveDomain()) {
 #' Send commands to a picker instance in a \code{Shiny} app
 #'
 #' @param proxy picker proxy object
-#' @param ... unused
+#' @param view_state view state from other picker input (optional).
+#' @param colors vector of colors (optional).
 #' @seealso \link{picker_proxy}
 #' @export
-update_picker <- function(proxy, view_state) {
+update_picker <- function(proxy, view_state = NULL, colors = NULL) {
   if (!inherits(proxy, "picker_proxy")) {
     stop("This function must be used with a picker_proxy object.", call. = FALSE)
   }
 
   proxy$session$sendCustomMessage(
     type = "proxythis",
-    message = list(initialViewState = view_state, id = proxy$id)
+    message = list(id = proxy$id, initialViewState = view_state, colors = colors)
   )
   proxy
 }
