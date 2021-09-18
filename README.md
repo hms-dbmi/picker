@@ -31,7 +31,7 @@ load(system.file('extdata/pbmcs.rda', package = 'picker'))
 if (require(repel)) {
     label_coords <- repel_text(
         label_coords, xrange = range(coords$UMAP1), yrange = range(coords$UMAP2))
-
+    
 } else {
     message("See https://github.com/hms-dbmi/repel to install repel")
 }
@@ -51,27 +51,27 @@ ui = shinyUI(fluidPage(
 ))
 
 server = function(input, output) {
-
+    
     # show selected output
     output$selected <- renderPrint({
         input$clusters_selected_points
     })
-
+    
     # coordinate views (zoom/pan)
     clusters_proxy <- picker_proxy('clusters')
     observeEvent(input$expression_view_state, {
         update_picker(clusters_proxy, input$expression_view_state)
     })
-
+    
     expression_proxy <- picker_proxy('expression')
     observeEvent(input$clusters_view_state, {
         update_picker(expression_proxy, input$clusters_view_state)
     })
-
-
+    
+    
     # render pickers
     output$clusters <- renderPicker(
-        picker(coords, cluster_colors, labels, label_coords)
+        picker(coords, cluster_colors, labels, label_coords, polygons, point_color_polygons = 'white')
     )
     output$expression <- renderPicker(
         picker(coords,
@@ -83,5 +83,6 @@ server = function(input, output) {
 }
 
 shinyApp(ui = ui, server = server, options = list(launch.browser = TRUE))
+
 ```
 
