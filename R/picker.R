@@ -16,20 +16,28 @@
 #' @return renders html widget
 #' @export
 #'
-picker <- function(coords, colors, labels, label_coords = NULL, show_controls = TRUE, scatter_props = NULL, deck_props = NULL, text_props = NULL, width = NULL, height = NULL, elementId = NULL) {
+picker <- function(coords, colors, labels, label_coords = NULL, polygons = NULL, point_color_polygons = NULL, show_controls = TRUE, scatter_props = NULL, deck_props = NULL, text_props = NULL, polygon_props = NULL, xrange = NULL, yrange = NULL, width = NULL, height = NULL, elementId = NULL) {
 
   colnames(coords) <- c('x', 'y')
+
+  if (is.null(xrange)) xrange <- range(coords$x)
+  if (is.null(yrange)) yrange <- range(coords$y)
 
 
   # forward options using x
   x = list(
     coords = coords,
+    xrange = xrange,
+    yrange = yrange,
     colors = colors,
     labels = labels,
     labelCoords = label_coords,
+    polygons = polygons,
+    pointColorPolygons = point_color_polygons,
     showControls = show_controls,
     scatterPlotLayerProps = scatter_props,
     textLayerProps = text_props,
+    polygonLayerProps = polygon_props,
     deckProps = deck_props
     )
 

@@ -1,49 +1,28 @@
 import { Deck, OrthographicView, COORDINATE_SYSTEM } from '@deck.gl/core';
-import { ScatterplotLayer, TextLayer } from '@deck.gl/layers';
+import { ScatterplotLayer, TextLayer, PolygonLayer } from '@deck.gl/layers';
 import { EditableGeoJsonLayer } from "@nebula.gl/layers";
 import { DrawPolygonByDraggingMode, ViewMode } from "@nebula.gl/edit-modes";
 import { polygon as turfPolygon } from '@turf/helpers';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
-import { createControlPanel, addControl, convertColor, getWidget, debounce, INITIAL_VIEW_STATE } from "./utils";
+import { createControlPanel, addControl, convertColor, getWidget, debounce, rescalePolygons, polygonsToContours, INITIAL_VIEW_STATE, DEFAULT_CHAR_SET } from "./utils";
 import selectionLasso from './selection_lasso.svg';
 import nearMe from './near_me.svg';
+import layers from './layers.svg';
 import "./default.css";
-
-const getCoordsRange = (coords) => {
-
-  var xMin, yMin, xMax, yMax, xTmp, yTmp;
-  xMin = yMin = Number.POSITIVE_INFINITY;
-  xMax = yMax = Number.NEGATIVE_INFINITY;
-
-  for (var i=coords.length-1; i >= 0; i--) {
-      // update x min/max
-      xTmp = coords[i].x;
-      if (xTmp < xMin) xMin = xTmp;
-      if (xTmp > xMax) xMax = xTmp;
-      
-      // update ymin/max
-      yTmp = coords[i].y;
-      if (yTmp < yMin) yMin = yTmp;
-      if (yTmp > yMax) yMax = yTmp;
-  }
-
-  return {xFrom: [xMin, xMax], yFrom: [yMin, yMax]};
-}
-
 
 const rescaleCoords = (coords, xTo, yTo, xFrom, yFrom) => {
   
   // pre-calc scale factors
   var xScale = (xTo[1] - xTo[0]) / (xFrom[1] - xFrom[0]);
   var yScale = (yTo[1] - yTo[0]) / (yFrom[1] - yFrom[0]);
-
+  
   // need non-shallow copy for deck.gl dataComparator
   var scaledCoords = coords.map((coord) => ({
     ...coord,
     x: xScale * (coord.x - xFrom[0]) + xTo[0],
     y: yScale * (coord.y - yFrom[0]) + yTo[0]
   }))
-
+  
   return scaledCoords;
 }
 
@@ -58,15 +37,18 @@ HTMLWidgets.widget({
     
     // define shared variables for this instance
     // =========================================
-
-    var coords, xFrom, yFrom, labels, labelCoords, scatterPlotLayerProps, textLayerProps, deckProps;
+    
+    var coords, scaledCoords, xFrom, yFrom, xTo, yTo, labels,  scaledPolygons, pointColorPolygons,
+    scatterPlotLayerProps, textLayerProps, deckProps, polygonLayerProps;
+    
     var mar = 10;
     
     const getCursorView = ({isDragging}) => isDragging ? 'grabbing' : 'default';
     const getCursorLasso = () => 'cell';
     
-    var mode = ViewMode
-    var getCursor = getCursorView
+    var getFillColor = (d, { index }) => deckgl.colors[index];
+    var mode = ViewMode;
+    var getCursor = getCursorView;
     
     const sendDataToShiny = (data, suffix) => {
       // Pass data back to R in 'shinyMode'
@@ -91,13 +73,33 @@ HTMLWidgets.widget({
       render()
     } 
     
+    const toggleGrid = () => {
+      grid.firstElementChild.classList.toggle('active')
+      console.log('toggling grid!')
+      deckgl.showGrid = !deckgl.showGrid;
+      
+      if (deckgl.showGrid && pointColorPolygons !== null) {
+        getFillColor = convertColor(pointColorPolygons);
+        deckgl.colors = pointColorPolygons;
+        
+      } else {
+        getFillColor = (d, { index }) => deckgl.colors[index];
+        deckgl.colors = deckgl.origColors;
+      }
+      
+      sendDataToShiny(deckgl.showGrid, '_show_grid');
+      render()
+    } 
+    
     const ctrlPanel = createControlPanel(el);
     const view = addControl(`<button class="btn-picker">${nearMe}</button>`, ctrlPanel)
     const lasso = addControl(`<button class="btn-picker">${selectionLasso}</button>`, ctrlPanel)
+    const grid = addControl(`<button class="btn-picker">${layers}</button>`, ctrlPanel)
     
     view.addEventListener("click", setView);
     lasso.addEventListener("click", setLasso);
-
+    grid.addEventListener("click", toggleGrid);
+    
     // initial tool selection
     view.firstElementChild.classList.add('active');
     
@@ -121,27 +123,30 @@ HTMLWidgets.widget({
         
         // send to Shiny for coordinated zooming across plots
         sendDataToShiny({ zoom, target }, '_view_state');
-
+        
         return viewState;
       }
     });
     
+    // so that can update display
+    deckgl.grid = grid;
+    deckgl.showGrid = false;
+    
     // render/update function
     const render = () => {
-
+      
       const layers = [
         new ScatterplotLayer({
           id: 'scatterplot',
-          data: coords,
+          data: scaledCoords,
           coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
           getPosition: d => [d.x, d.y],
-          getFillColor: (d, { index }) => deckgl.colors[index],
+          getFillColor: getFillColor,
           updateTriggers: {
             getFillColor: deckgl.colors,
             getTooltip: labels,
-            getPosition: coords,
+            getPosition: scaledCoords,
           },
-          getLineColor: [0, 0, 0],
           getPointRadius: 1,
           pickable: true,
           opacity: 0.8,
@@ -155,6 +160,23 @@ HTMLWidgets.widget({
           lineWidthMaxPixels: 0,
           ...scatterPlotLayerProps
         }),
+        new PolygonLayer({
+          id: 'polygons',
+          data: deckgl.contours,
+          coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
+          pickable: false,
+          stroked: true,
+          filled: true,
+          wireframe: true,
+          visible: deckgl.showGrid,
+          lineWidthMinPixels: 1,
+          lineWidthMaxPixels: 0,
+          getLineColor: [221, 221, 221, 255],
+          getLineWidth: 1,
+          getPolygon: d => d.contour,
+          getFillColor: d => d.color,
+          ...polygonLayerProps
+        }),
         new EditableGeoJsonLayer({
           id: "nebula",
           data: myFeatureCollection,
@@ -165,7 +187,7 @@ HTMLWidgets.widget({
               const { coordinates } = updatedData.features[0].geometry;
               const polygon = turfPolygon(coordinates);
               
-              const ptsWithin = coords.reduce((out, pt, i) => 
+              const ptsWithin = scaledCoords.reduce((out, pt, i) => 
               booleanPointInPolygon([pt.x, pt.y], polygon) ? out.concat(i) : out,
               []);
               
@@ -192,7 +214,7 @@ HTMLWidgets.widget({
           coordinateSystem: COORDINATE_SYSTEM.CARTESIAN
         }),
         new TextLayer({
-          data: labelCoords,
+          data: deckgl.scaledLabelCoords,
           getPosition: d => [d.x, d.y],
           getText: d => d.label,
           getSize: 18,
@@ -201,34 +223,55 @@ HTMLWidgets.widget({
           fontFamily: 'Helvetica, Arial, sans-serif',
           getTextAnchor: 'start',
           getAlignmentBaseline: 'top',
+          getColor: [51, 51, 51],
+          characterSet: DEFAULT_CHAR_SET,
           ...textLayerProps
         })
       ];
-
+      
       
       const getTooltip = ({ index }) => index && labels[index]
       deckgl.setProps({ layers, getCursor, getTooltip, ...deckProps });
     }
     
     const renderValue = (x) => {
-
-      ctrlPanel.style.display = x.showControls ? "block" : "none";
+      
+      if (!x.showControls) {
+        lasso.style.display = "none";
+        view.style.display = "none";
+      }
       
       // rescale x and y to width and height
-      labelCoords = HTMLWidgets.dataframeToD3(x.labelCoords);
+      deckgl.labelCoords = HTMLWidgets.dataframeToD3(x.labelCoords);
       coords = HTMLWidgets.dataframeToD3(x.coords);
-
-      ({ xFrom, yFrom } = getCoordsRange(coords));
-      var xTo = [-width/2 + mar, width/2 - mar];
-      var yTo = [-height/2 + mar, height/2 - mar];
-      coords = rescaleCoords(coords, xTo, yTo, xFrom, yFrom)
-      labelCoords = rescaleCoords(labelCoords, xTo, yTo, xFrom, yFrom)
-
+      
+      xFrom = deckgl.xFrom = x.xrange;
+      yFrom = deckgl.yFrom = x.yrange;
+      xTo = deckgl.xTo = [-width/2 + mar, width/2 - mar];
+      yTo = deckgl.yTo = [-height/2 + mar, height/2 - mar];
+      
+      scaledCoords = rescaleCoords(coords, xTo, yTo, xFrom, yFrom)
+      deckgl.scaledLabelCoords = rescaleCoords(deckgl.labelCoords, xTo, yTo, xFrom, yFrom)
+      
+      pointColorPolygons = x.pointColorPolygons;
+      polygonLayerProps = x.polygonLayerProps;
+      
+      if (x.polygons !== null) {
+        x.polygons.color = x.polygons.color.map((hex) => convertColor(hex));
+        deckgl.polygons = HTMLWidgets.dataframeToD3(x.polygons);
+        scaledPolygons = rescalePolygons(deckgl.polygons, xTo, yTo, xFrom, yFrom);
+        deckgl.contours = polygonsToContours(scaledPolygons);
+        
+      } else {
+        if (deckgl.showGrid) deckgl.grid.click();
+        deckgl.grid.style.display = "none";
+      }
+      
       // allow updates to colors and labels without changing data
       // see https://deck.gl/docs/developer-guide/performance#use-updatetriggers
-      deckgl.colors = x.colors.map((color) => convertColor(color));
+      deckgl.colors = deckgl.origColors = x.colors.map((color) => convertColor(color));
       deckgl.render = render;
-
+      
       labels = x.labels;
       scatterPlotLayerProps = x.scatterPlotLayerProps;
       textLayerProps = x.textLayerProps;
@@ -236,39 +279,68 @@ HTMLWidgets.widget({
       
       render()
     }
-
+    
     // a method to expose our deck to the outside
     const getDeck = () => deckgl;
-
+    
     if (HTMLWidgets.shinyMode) {
       Shiny.addCustomMessageHandler('proxythis', function(obj) {
-
+        
         // get correct HTMLWidget deck instance
         const deck = getWidget(obj.id).getDeck();
-
+        
+        // destructure deck attributes
+        const { xTo, yTo, xFrom, yFrom } = deck;
+        
         // update viewState
         if (obj.initialViewState !== null) {
           deck.setProps({ initialViewState: {...INITIAL_VIEW_STATE, ...obj.initialViewState} });
         }
-
+        
         if (obj.colors !== null) {
           deck.colors = obj.colors.map((color) => convertColor(color));
           deck.render();
+        } 
+        
+        if (obj.labelCoords !== null) {
+          deck.labelCoords = HTMLWidgets.dataframeToD3(obj.labelCoords);
+          deck.scaledLabelCoords = rescaleCoords(deck.labelCoords, xTo, yTo, xFrom, yFrom);
+          deck.render();
+        } 
+        
+        if (obj.polygons !== null) {
+          obj.polygons.color = obj.polygons.color.map((hex) => convertColor(hex));
+          deck.polygons = HTMLWidgets.dataframeToD3(obj.polygons);
+          const scaledPolygons = rescalePolygons(deck.polygons, xTo, yTo, xFrom, yFrom);
+          deck.contours = polygonsToContours(scaledPolygons);
+          deck.grid.style.display = "block";
+          
+          deck.render();
+        }
+
+        if (obj.showGrid && !deck.showGrid) {
+          deck.grid.click();
         }
         
       });
     }
     
     const resize = (width, height) => {
-
-      // rescale x and y to width and height and re-render
-      ({ xFrom, yFrom } = getCoordsRange(coords));
-      var xTo = [-width/2 + mar, width/2 - mar];
-      var yTo = [-height/2 + mar, height/2 - mar];
       
-      coords = rescaleCoords(coords, xTo, yTo, xFrom, yFrom);
-      labelCoords = rescaleCoords(labelCoords, xTo, yTo, xFrom, yFrom);
-
+      // rescale x and y to width and height and re-render
+      xTo = deckgl.xTo = [-width/2 + mar, width/2 - mar];
+      yTo = deckgl.yTo = [-height/2 + mar, height/2 - mar];
+      
+      const { xFrom, yFrom } = deckgl;
+      
+      scaledCoords = rescaleCoords(coords, xTo, yTo, xFrom, yFrom);
+      deckgl.scaledLabelCoords = rescaleCoords(deckgl.labelCoords, xTo, yTo, xFrom, yFrom);
+      
+      if (deckgl.polygons !== undefined) {
+        scaledPolygons = rescalePolygons(deckgl.polygons, xTo, yTo, xFrom, yFrom);
+        deckgl.contours = polygonsToContours(scaledPolygons);
+      }
+      
       render()
     }
     

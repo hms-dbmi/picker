@@ -34,14 +34,19 @@ picker_proxy <- function(shinyId, session = shiny::getDefaultReactiveDomain()) {
 #' @param colors vector of colors (optional).
 #' @seealso \link{picker_proxy}
 #' @export
-update_picker <- function(proxy, view_state = NULL, colors = NULL) {
+update_picker <- function(proxy, view_state = NULL, colors = NULL, label_coords = NULL, polygons = NULL, show_grid = NULL) {
   if (!inherits(proxy, "picker_proxy")) {
     stop("This function must be used with a picker_proxy object.", call. = FALSE)
   }
 
   proxy$session$sendCustomMessage(
     type = "proxythis",
-    message = list(id = proxy$id, initialViewState = view_state, colors = colors)
+    message = list(id = proxy$id,
+                   initialViewState = view_state,
+                   colors = colors,
+                   labelCoords = label_coords,
+                   polygons = polygons,
+                   showGrid = show_grid)
   )
   proxy
 }

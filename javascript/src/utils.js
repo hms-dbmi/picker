@@ -10,6 +10,16 @@ const POSITIONS = [
     "bottom-left"
 ];
 
+function getDefaultCharacterSet() {
+    const charSet = ['Δ'];
+    for (let i = 32; i < 128; i++) {
+      charSet.push(String.fromCharCode(i));
+    }
+    return charSet;
+}
+
+export const DEFAULT_CHAR_SET = getDefaultCharacterSet();
+
 export const INITIAL_VIEW_STATE = {
     target: [0, 0, 0],
     minZoom: 0,
@@ -33,7 +43,7 @@ export const addControl = (html, parent, style) => {
     const ctrl = document.createElement("div");
     ctrl.classList.add(CLASS_NAME_CTRL);
     if (style) ctrl.style.cssText = style;
-
+    
     ctrl.innerHTML = html;
     parent.appendChild(ctrl);
     return ctrl;
@@ -44,16 +54,53 @@ export const getWidget = (id) => HTMLWidgets.find("#" + id)
 
 
 export const debounce = (func, wait, immediate) => {
-	var timeout;
-	return function() {
-		var context = this, args = arguments;
-		var later = function() {
-			timeout = null;
-			if (!immediate) func.apply(context, args);
-		};
-		var callNow = immediate && !timeout;
-		clearTimeout(timeout);
-		timeout = setTimeout(later, wait);
-		if (callNow) func.apply(context, args);
-	};
+    var timeout;
+    return function() {
+        var context = this, args = arguments;
+        var later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
 };
+
+
+
+export const rescalePolygons = (polygons, xTo, yTo, xFrom, yFrom) => {
+    
+    // pre-calc scale factors
+    var xScale = (xTo[1] - xTo[0]) / (xFrom[1] - xFrom[0]);
+    var yScale = (yTo[1] - yTo[0]) / (yFrom[1] - yFrom[0]);
+    
+    // need non-shallow copy for deck.gl dataComparator
+    var scaledPolygons = polygons.map((poly) => ({
+        ...poly,
+        x1: xScale * (poly.x1 - xFrom[0]) + xTo[0],
+        x2: xScale * (poly.x2 - xFrom[0]) + xTo[0],
+        y1: yScale * (poly.y1 - yFrom[0]) + yTo[0],
+        y2: yScale * (poly.y2 - yFrom[0]) + yTo[0]
+    }))
+    
+    return scaledPolygons;
+}
+
+
+export const polygonsToContours = (polygons) => {
+    
+    const contours = polygons.map((poly) => ({
+        ...poly,
+        contour: [
+            [poly.x1, poly.y1], 
+            [poly.x1, poly.y2],
+            [poly.x2, poly.y2],
+            [poly.x2, poly.y1]
+        ]
+    }))
+    
+    return contours;
+    
+}

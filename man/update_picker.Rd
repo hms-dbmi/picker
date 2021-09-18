@@ -4,7 +4,14 @@
 \alias{update_picker}
 \title{Send commands to a picker instance in a \code{Shiny} app}
 \usage{
-update_picker(proxy, view_state = NULL, colors = NULL)
+update_picker(
+  proxy,
+  view_state = NULL,
+  colors = NULL,
+  label_coords = NULL,
+  polygons = NULL,
+  show_grid = NULL
+)
 }
 \arguments{
 \item{proxy}{picker proxy object}
