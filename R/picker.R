@@ -1,14 +1,20 @@
 
-#' Title
+#' Render a Picker Widget
 #'
 #' @param coords data.frame with two columns. First has x, second has y coordinates.
 #' @param colors vector of hex colors, one for each row of \code{coords}.
 #' @param labels vector of point labels used for tooltips on hover.
 #' @param label_coords data.frame with three columns 'x', 'y', and 'label'. Used for text layer.
+#' @param polygons data.frame containing at minimum columns 'x1', 'x2', 'y1', 'y2',
+#'    that define the polygons to draw and 'color' that defines the color.
+#' @param point_color_polygons character, a color to make points when polygons are shown e.g. \code{'white'}.
 #' @param show_controls Should control panel be shown? Default is \code{TRUE}.
 #' @param scatter_props Props passed to deck.gl \href{https://deck.gl/docs/api-reference/layers/scatterplot-layer}{ScatterplotLayer}.
 #' @param deck_props  Props passed to deck.gl \href{https://deck.gl/docs/api-reference/core/deck}{Deck} instance.
 #' @param text_props Props passed to deck.gl \href{https://deck.gl/docs/api-reference/layers/text-layer}{TextLayer}.
+#' @param polygon_props Props passed to deck.gl \href{https://deck.gl/docs/api-reference/layers/polygon-layer}{PolygonLayer}.
+#' @param xrange range of x-values. Default is \code{range(coords[,1])}.
+#' @param yrange range of y-values. Default is \code{range(coords[,2])}.
 #' @param width width of htmlwidget.
 #' @param height height of htmlwidget.
 #' @param elementId id of htmlwidget.

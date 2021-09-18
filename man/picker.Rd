@@ -2,7 +2,7 @@
 % Please edit documentation in R/picker.R
 \name{picker}
 \alias{picker}
-\title{Title}
+\title{Render a Picker Widget}
 \usage{
 picker(
   coords,
@@ -32,6 +32,11 @@ picker(
 
 \item{label_coords}{data.frame with three columns 'x', 'y', and 'label'. Used for text layer.}
 
+\item{polygons}{data.frame containing at minimum columns 'x1', 'x2', 'y1', 'y2',
+that define the polygons to draw and 'color' that defines the color.}
+
+\item{point_color_polygons}{character, a color to make points when polygons are shown e.g. \code{'white'}.}
+
 \item{show_controls}{Should control panel be shown? Default is \code{TRUE}.}
 
 \item{scatter_props}{Props passed to deck.gl \href{https://deck.gl/docs/api-reference/layers/scatterplot-layer}{ScatterplotLayer}.}
@@ -39,6 +44,12 @@ picker(
 \item{deck_props}{Props passed to deck.gl \href{https://deck.gl/docs/api-reference/core/deck}{Deck} instance.}
 
 \item{text_props}{Props passed to deck.gl \href{https://deck.gl/docs/api-reference/layers/text-layer}{TextLayer}.}
+
+\item{polygon_props}{Props passed to deck.gl \href{https://deck.gl/docs/api-reference/layers/polygon-layer}{PolygonLayer}.}
+
+\item{xrange}{range of x-values. Default is \code{range(coords[,1])}.}
+
+\item{yrange}{range of y-values. Default is \code{range(coords[,2])}.}
 
 \item{width}{width of htmlwidget.}
 
@@ -50,5 +61,5 @@ picker(
 renders html widget
 }
 \description{
-Title
+Render a Picker Widget
 }

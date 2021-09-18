@@ -75,7 +75,6 @@ HTMLWidgets.widget({
     
     const toggleGrid = () => {
       grid.firstElementChild.classList.toggle('active')
-      console.log('toggling grid!')
       deckgl.showGrid = !deckgl.showGrid;
       
       if (deckgl.showGrid && pointColorPolygons !== null) {

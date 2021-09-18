@@ -18,7 +18,14 @@ update_picker(
 
 \item{view_state}{view state from other picker input (optional).}
 
-\item{colors}{vector of colors (optional).}
+\item{colors}{vector of hex colors, one for each row of \code{coords}.}
+
+\item{label_coords}{data.frame with three columns 'x', 'y', and 'label'. Used for text layer.}
+
+\item{polygons}{data.frame containing at minimum columns 'x1', 'x2', 'y1', 'y2',
+that define the polygons to draw and 'color' that defines the color.}
+
+\item{show_grid}{set to \code{TRUE} to turn on grid layer.}
 }
 \description{
 Send commands to a picker instance in a \code{Shiny} app

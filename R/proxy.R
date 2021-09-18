@@ -31,7 +31,8 @@ picker_proxy <- function(shinyId, session = shiny::getDefaultReactiveDomain()) {
 #'
 #' @param proxy picker proxy object
 #' @param view_state view state from other picker input (optional).
-#' @param colors vector of colors (optional).
+#' @param show_grid set to \code{TRUE} to turn on grid layer.
+#' @inheritParams picker
 #' @seealso \link{picker_proxy}
 #' @export
 update_picker <- function(proxy, view_state = NULL, colors = NULL, label_coords = NULL, polygons = NULL, show_grid = NULL) {
