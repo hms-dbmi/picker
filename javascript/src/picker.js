@@ -4,27 +4,20 @@ import { EditableGeoJsonLayer } from "@nebula.gl/layers";
 import { DrawPolygonByDraggingMode, ViewMode } from "@nebula.gl/edit-modes";
 import { polygon as turfPolygon } from '@turf/helpers';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
-import { createControlPanel, addControl, convertColor, getWidget, debounce, rescalePolygons, polygonsToContours, INITIAL_VIEW_STATE, DEFAULT_CHAR_SET } from "./utils";
 import selectionLasso from './selection_lasso.svg';
 import nearMe from './near_me.svg';
 import layers from './layers.svg';
 import "./default.css";
-
-const rescaleCoords = (coords, xTo, yTo, xFrom, yFrom) => {
-  
-  // pre-calc scale factors
-  var xScale = (xTo[1] - xTo[0]) / (xFrom[1] - xFrom[0]);
-  var yScale = (yTo[1] - yTo[0]) / (yFrom[1] - yFrom[0]);
-  
-  // need non-shallow copy for deck.gl dataComparator
-  var scaledCoords = coords.map((coord) => ({
-    ...coord,
-    x: xScale * (coord.x - xFrom[0]) + xTo[0],
-    y: yScale * (coord.y - yFrom[0]) + yTo[0]
-  }))
-  
-  return scaledCoords;
-}
+import { 
+  createControlPanel, 
+  addControl, 
+  convertColor, getWidget, debounce, 
+  rescaleCoords, 
+  rescalePolygons, 
+  polygonsToContours, 
+  INITIAL_VIEW_STATE, 
+  DEFAULT_CHAR_SET 
+} from "./utils";
 
 
 HTMLWidgets.widget({
@@ -37,27 +30,26 @@ HTMLWidgets.widget({
     
     // define shared variables for this instance
     // =========================================
-    
     var coords, scaledCoords, xFrom, yFrom, xTo, yTo, labels,  scaledPolygons, pointColorPolygons,
     scatterPlotLayerProps, textLayerProps, deckProps, polygonLayerProps;
     
     var mar = 10;
     
-    const getCursorView = ({isDragging}) => isDragging ? 'grabbing' : 'default';
-    const getCursorLasso = () => 'cell';
-    
-    var getFillColor = (d, { index }) => deckgl.colors[index];
-    var mode = ViewMode;
-    var getCursor = getCursorView;
-    
+    // Pass data back to R in 'shinyMode'
     const sendDataToShiny = (data, suffix) => {
-      // Pass data back to R in 'shinyMode'
       if (HTMLWidgets.shinyMode) {
         Shiny.onInputChange(el.id + suffix, data);
       }
     }
     
-    // setup controls
+    // control panel click handlers
+    const getCursorView = ({isDragging}) => isDragging ? 'grabbing' : 'default';
+    const getCursorLasso = () => 'cell';
+    
+    var getFillColor = (d, { index }) => deckgl.colors[index];
+    var getCursor = getCursorView;
+    var mode = ViewMode;
+
     const setView = () => {
       view.firstElementChild.classList.add('active')
       lasso.firstElementChild.classList.remove('active')
@@ -90,6 +82,7 @@ HTMLWidgets.widget({
       render()
     } 
     
+    // create controls & attach listeners
     const ctrlPanel = createControlPanel(el);
     const view = addControl(`<button class="btn-picker">${nearMe}</button>`, ctrlPanel)
     const lasso = addControl(`<button class="btn-picker">${selectionLasso}</button>`, ctrlPanel)
@@ -127,7 +120,7 @@ HTMLWidgets.widget({
       }
     });
     
-    // so that can update display
+    // add to deck object so that can update with proxy
     deckgl.grid = grid;
     deckgl.showGrid = false;
     
@@ -233,6 +226,7 @@ HTMLWidgets.widget({
       deckgl.setProps({ layers, getCursor, getTooltip, ...deckProps });
     }
     
+    // what gets called from R on re-render
     const renderValue = (x) => {
       
       if (!x.showControls) {
@@ -266,8 +260,6 @@ HTMLWidgets.widget({
         deckgl.grid.style.display = "none";
       }
       
-      // allow updates to colors and labels without changing data
-      // see https://deck.gl/docs/developer-guide/performance#use-updatetriggers
       deckgl.colors = deckgl.origColors = x.colors.map((color) => convertColor(color));
       deckgl.render = render;
       
@@ -282,6 +274,8 @@ HTMLWidgets.widget({
     // a method to expose our deck to the outside
     const getDeck = () => deckgl;
     
+    // handlers to update via proxy
+    // NOTE: updates/calls in here must reference correct deck instance
     if (HTMLWidgets.shinyMode) {
       Shiny.addCustomMessageHandler('proxythis', function(obj) {
         

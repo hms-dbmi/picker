@@ -13,7 +13,7 @@ const POSITIONS = [
 function getDefaultCharacterSet() {
     const charSet = ['Δ'];
     for (let i = 32; i < 128; i++) {
-      charSet.push(String.fromCharCode(i));
+        charSet.push(String.fromCharCode(i));
     }
     return charSet;
 }
@@ -68,7 +68,21 @@ export const debounce = (func, wait, immediate) => {
     };
 };
 
-
+export const rescaleCoords = (coords, xTo, yTo, xFrom, yFrom) => {
+    
+    // pre-calc scale factors
+    var xScale = (xTo[1] - xTo[0]) / (xFrom[1] - xFrom[0]);
+    var yScale = (yTo[1] - yTo[0]) / (yFrom[1] - yFrom[0]);
+    
+    // need non-shallow copy for deck.gl dataComparator
+    var scaledCoords = coords.map((coord) => ({
+        ...coord,
+        x: xScale * (coord.x - xFrom[0]) + xTo[0],
+        y: yScale * (coord.y - yFrom[0]) + yTo[0]
+    }))
+    
+    return scaledCoords;
+}
 
 export const rescalePolygons = (polygons, xTo, yTo, xFrom, yFrom) => {
     

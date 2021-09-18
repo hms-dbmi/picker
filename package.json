@@ -1,5 +1,0 @@
-{
-  "dependencies": {
-    "@turf/points-within-polygon": "^6.5.0"
-  }
-}
