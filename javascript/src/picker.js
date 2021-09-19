@@ -280,7 +280,10 @@ HTMLWidgets.widget({
       Shiny.addCustomMessageHandler('proxythis', function(obj) {
         
         // get correct HTMLWidget deck instance
-        const deck = getWidget(obj.id).getDeck();
+        const widget = getWidget(obj.id);
+        if (widget == null) return;
+
+        const deck = widget.getDeck();
         
         // destructure deck attributes
         const { xTo, yTo, xFrom, yFrom } = deck;
