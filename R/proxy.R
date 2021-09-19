@@ -45,6 +45,7 @@ update_picker <- function(proxy, view_state = NULL, colors = NULL, labels = NULL
     message = list(id = proxy$id,
                    initialViewState = view_state,
                    colors = colors,
+                   labels = labels,
                    labelCoords = label_coords,
                    polygons = polygons,
                    showGrid = show_grid)
