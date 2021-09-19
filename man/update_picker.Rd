@@ -8,6 +8,7 @@ update_picker(
   proxy,
   view_state = NULL,
   colors = NULL,
+  labels = NULL,
   label_coords = NULL,
   polygons = NULL,
   show_grid = NULL
@@ -19,6 +20,8 @@ update_picker(
 \item{view_state}{view state from other picker input (optional).}
 
 \item{colors}{vector of hex colors, one for each row of \code{coords}.}
+
+\item{labels}{vector of point labels used for tooltips on hover.}
 
 \item{label_coords}{data.frame with three columns 'x', 'y', and 'label'. Used for text layer.}
 

@@ -30,7 +30,7 @@ HTMLWidgets.widget({
     
     // define shared variables for this instance
     // =========================================
-    var coords, scaledCoords, xFrom, yFrom, xTo, yTo, labels,  scaledPolygons, pointColorPolygons,
+    var coords, scaledCoords, xFrom, yFrom, xTo, yTo,  scaledPolygons, pointColorPolygons,
     scatterPlotLayerProps, textLayerProps, deckProps, polygonLayerProps;
     
     var mar = 10;
@@ -136,7 +136,7 @@ HTMLWidgets.widget({
           getFillColor: getFillColor,
           updateTriggers: {
             getFillColor: deckgl.colors,
-            getTooltip: labels,
+            getTooltip: deckgl.labels,
             getPosition: scaledCoords,
           },
           getPointRadius: 1,
@@ -222,7 +222,7 @@ HTMLWidgets.widget({
       ];
       
       
-      const getTooltip = ({ index }) => index && labels[index]
+      const getTooltip = ({ index }) => index && deckgl.labels[index]
       deckgl.setProps({ layers, getCursor, getTooltip, ...deckProps });
     }
     
@@ -263,7 +263,7 @@ HTMLWidgets.widget({
       deckgl.colors = deckgl.origColors = x.colors.map((color) => convertColor(color));
       deckgl.render = render;
       
-      labels = x.labels;
+      deckgl.labels = x.labels;
       scatterPlotLayerProps = x.scatterPlotLayerProps;
       textLayerProps = x.textLayerProps;
       deckProps = x.deckProps;
@@ -308,6 +308,11 @@ HTMLWidgets.widget({
           deck.contours = polygonsToContours(scaledPolygons);
           deck.grid.style.display = "block";
           
+          deck.render();
+        }
+
+        if (obj.labels !== null) {
+          deck.labels = obj.labels;
           deck.render();
         }
 
