@@ -294,7 +294,7 @@ HTMLWidgets.widget({
         }
         
         if (obj.colors !== null) {
-          deck.colors = obj.colors.map((color) => convertColor(color));
+          deck.colors = deck.origColors = obj.colors.map((color) => convertColor(color));
           deck.render();
         } 
         
