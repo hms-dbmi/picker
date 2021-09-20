@@ -74,8 +74,8 @@ HTMLWidgets.widget({
         deckgl.colors = pointColorPolygons;
         
       } else {
-        getFillColor = (d, { index }) => deckgl.colors[index];
         deckgl.colors = deckgl.origColors;
+        getFillColor = (d, { index }) => deckgl.colors[index];
       }
       
       sendDataToShiny(deckgl.showGrid, '_show_grid');
