@@ -27,10 +27,17 @@ library(picker)
 # load example data
 load(system.file('extdata/pbmcs.rda', package = 'picker'))
 
-# repel labels
+text_props <- list()
+
 if (require(repel)) {
-    label_coords <- repel_text(
-        label_coords, xrange = range(coords$UMAP1), yrange = range(coords$UMAP2))
+    # repel labels
+    label_coords$label <- levels(labels)[as.numeric(label_coords$label)]
+    label_coords <- repel_text(label_coords, mar = rep(0, 4), fontsize = 16)
+    
+    # adjust text props to be the same
+    text_props$getSize <- 16
+    text_props$getTextAnchor <- 'middle'
+    text_props$getAlignmentBaseline <- 'center'
     
 } else {
     message("See https://github.com/hms-dbmi/repel to install repel")
@@ -71,14 +78,13 @@ server = function(input, output) {
     
     # render pickers
     output$clusters <- renderPicker(
-        picker(coords, cluster_colors, labels, label_coords, polygons, point_color_polygons = 'white')
+        picker(coords, cluster_colors, labels, label_coords, polygons, text_props = text_props, point_color_polygons = 'white')
     )
     output$expression <- renderPicker(
         picker(coords,
                expression_colors,
                labels,
-               show_controls = FALSE,
-               text_props = list(getSize=12))
+               show_controls = FALSE)
     )
 }
 

@@ -15,6 +15,8 @@
 #' @param polygon_props Props passed to deck.gl \href{https://deck.gl/docs/api-reference/layers/polygon-layer}{PolygonLayer}.
 #' @param xrange range of x-values. Default is \code{range(coords[,1])}.
 #' @param yrange range of y-values. Default is \code{range(coords[,2])}.
+#' @param xaxs the fraction to extend \code{xrange} on either side. Default is 0.04.
+#' @param yaxs the fraction to extend \code{yrange} on either side. Default is 0.04.
 #' @param width width of htmlwidget.
 #' @param height height of htmlwidget.
 #' @param elementId id of htmlwidget.
@@ -22,13 +24,19 @@
 #' @return renders html widget
 #' @export
 #'
-picker <- function(coords, colors, labels, label_coords = NULL, polygons = NULL, point_color_polygons = NULL, show_controls = TRUE, scatter_props = NULL, deck_props = NULL, text_props = NULL, polygon_props = NULL, xrange = NULL, yrange = NULL, width = NULL, height = NULL, elementId = NULL) {
+picker <- function(coords, colors, labels, label_coords = NULL, polygons = NULL, point_color_polygons = NULL, show_controls = TRUE, scatter_props = NULL, deck_props = NULL, text_props = NULL, polygon_props = NULL, xrange = NULL, yrange = NULL, xaxs = 0.04, yaxs = 0.04,  width = NULL, height = NULL, elementId = NULL) {
 
   colnames(coords) <- c('x', 'y')
 
   if (is.null(xrange)) xrange <- range(coords$x)
   if (is.null(yrange)) yrange <- range(coords$y)
 
+  # extend ranges
+  xext <- diff(xrange)*xaxs
+  yext <- diff(yrange)*yaxs
+
+  xrange <- xrange + c(-xext, xext)
+  yrange <- yrange + c(-yext, yext)
 
   # forward options using x
   x = list(

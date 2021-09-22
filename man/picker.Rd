@@ -18,6 +18,8 @@ picker(
   polygon_props = NULL,
   xrange = NULL,
   yrange = NULL,
+  xaxs = 0.04,
+  yaxs = 0.04,
   width = NULL,
   height = NULL,
   elementId = NULL
@@ -50,6 +52,10 @@ that define the polygons to draw and 'color' that defines the color.}
 \item{xrange}{range of x-values. Default is \code{range(coords[,1])}.}
 
 \item{yrange}{range of y-values. Default is \code{range(coords[,2])}.}
+
+\item{xaxs}{the fraction to extend \code{xrange} on either side. Default is 0.04.}
+
+\item{yaxs}{the fraction to extend \code{yrange} on either side. Default is 0.04.}
 
 \item{width}{width of htmlwidget.}
 
