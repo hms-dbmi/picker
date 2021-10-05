@@ -4,8 +4,7 @@ Overview
 
 `picker` lets you zoom, pan, and pick points from a scatter plot.
 
-
-![alt text](picker.gif)
+![picker](https://user-images.githubusercontent.com/15719520/136078840-1a47397b-19aa-458c-ae2e-e1c14b69f692.gif)
 
 
 Installation
