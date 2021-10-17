@@ -1,5 +1,3 @@
-import { Deck, OrthographicView, COORDINATE_SYSTEM } from '@deck.gl/core';
-import { ScatterplotLayer, TextLayer, PolygonLayer } from '@deck.gl/layers';
 import { EditableGeoJsonLayer } from "@nebula.gl/layers";
 import { DrawPolygonByDraggingMode, ViewMode } from "@nebula.gl/edit-modes";
 import { polygon as turfPolygon } from '@turf/helpers';
@@ -18,6 +16,8 @@ import {
   INITIAL_VIEW_STATE,
   DEFAULT_CHAR_SET
 } from "./utils";
+
+const {Deck, OrthographicView, COORDINATE_SYSTEM, ScatterplotLayer, TextLayer, PolygonLayer} = deck;
 
 
 HTMLWidgets.widget({
@@ -281,44 +281,44 @@ HTMLWidgets.widget({
         const widget = getWidget(obj.id);
         if (widget == null) return;
 
-        const deck = widget.getDeck();
+        const deckInstance = widget.getDeck();
 
         // destructure deck attributes
-        const { xTo, yTo, xFrom, yFrom } = deck;
+        const { xTo, yTo, xFrom, yFrom } = deckInstance;
 
         // update viewState
         if (obj.initialViewState !== null) {
-          deck.setProps({ initialViewState: {...INITIAL_VIEW_STATE, ...obj.initialViewState} });
+          deckInstance.setProps({ initialViewState: {...INITIAL_VIEW_STATE, ...obj.initialViewState} });
         }
 
         if (obj.colors !== null) {
-          deck.colors = deck.origColors = obj.colors.map((color) => convertColor(color));
-          deck.render();
+          deckInstance.colors = deckInstance.origColors = obj.colors.map((color) => convertColor(color));
+          deckInstance.render();
         }
 
         if (obj.labelCoords !== null) {
-          deck.labelCoords = HTMLWidgets.dataframeToD3(obj.labelCoords);
-          deck.scaledLabelCoords = rescaleCoords(deck.labelCoords, xTo, yTo, xFrom, yFrom);
-          deck.render();
+          deckInstance.labelCoords = HTMLWidgets.dataframeToD3(obj.labelCoords);
+          deckInstance.scaledLabelCoords = rescaleCoords(deckInstance.labelCoords, xTo, yTo, xFrom, yFrom);
+          deckInstance.render();
         }
 
         if (obj.polygons !== null) {
           obj.polygons.color = obj.polygons.color.map((hex) => convertColor(hex));
-          deck.polygons = HTMLWidgets.dataframeToD3(obj.polygons);
-          const scaledPolygons = rescalePolygons(deck.polygons, xTo, yTo, xFrom, yFrom);
-          deck.contours = polygonsToContours(scaledPolygons);
-          deck.grid.style.display = "block";
+          deckInstance.polygons = HTMLWidgets.dataframeToD3(obj.polygons);
+          const scaledPolygons = rescalePolygons(deckInstance.polygons, xTo, yTo, xFrom, yFrom);
+          deckInstance.contours = polygonsToContours(scaledPolygons);
+          deckInstance.grid.style.display = "block";
 
-          deck.render();
+          deckInstance.render();
         }
 
         if (obj.labels !== null) {
-          deck.labels = obj.labels;
-          deck.render();
+          deckInstance.labels = obj.labels;
+          deckInstance.render();
         }
 
-        if (obj.showGrid && !deck.showGrid) {
-          deck.grid.click();
+        if (obj.showGrid && !deckInstance.showGrid) {
+          deckInstance.grid.click();
         }
 
       });

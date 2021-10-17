@@ -20,16 +20,11 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "@deck.gl/core": "^8.5.7",
-    "@deck.gl/extensions": "^8.5.7",
-    "@deck.gl/geo-layers": "^8.5.7",
-    "@deck.gl/layers": "^8.5.7",
-    "@deck.gl/mesh-layers": "^8.5.7",
     "@nebula.gl/edit-modes": "^0.23.3",
     "@nebula.gl/layers": "^0.23.3",
     "@turf/boolean-point-in-polygon": "^6.5.0",
     "@turf/helpers": "^6.5.0",
     "d3-color": "^1.4.0",
-    "mustache": "^4.0.1"
+    "math.gl": "^3.5.6"
   }
 }

@@ -55,6 +55,7 @@ picker <- function(coords, colors, labels, label_coords = NULL, polygons = NULL,
     deckProps = deck_props
     )
 
+
   # create widget
   htmlwidgets::createWidget(
     name = 'picker',
@@ -93,6 +94,4 @@ renderPicker <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted
   htmlwidgets::shinyRenderWidget(expr, pickerOutput, env, quoted = TRUE)
 }
-
-
 

@@ -18,5 +18,16 @@ module.exports = {
         loader: 'raw-loader'
       }
     ],
+  },
+  externals: {
+    'deck.gl': 'deck',
+    '@deck.gl/core': 'deck',
+    '@deck.gl/extensions': 'deck',
+    '@deck.gl/geo-layers': 'deck',
+    '@deck.gl/layers': 'deck',
+    '@deck.gl/mesh-layers': 'deck',
+    '@luma.gl/core': 'luma',
+    '@luma.gl/constants': 'luma',
+    '@loaders.gl/core': 'loaders',
   }
 };
