@@ -41,18 +41,22 @@ export const createControlPanel = (widgetElement) => {
 
 
 export function createLegendPanel(widgetElement, items, title) {
-    const rows = items.map(item => `
-    <li>
-    <span class="point-mark" style="background-color:${item.color};border: 1px solid black;"></span>
-    <span>${item.label}</span>
-    </li>
-    `);
-    const html = `
-    <div class="legend">
-    <div class="legend-title">${title || "" }</div>
-    <div class="legend-items"><ul>${rows.join("\n")}</ul></div>
-    </div>
-    `;
+    var html = '';
+
+    if (items) {
+        const rows = items.map(item => `
+        <li>
+        <span class="point-mark" style="background-color:${item.color};border: 1px solid black;"></span>
+        <span>${item.label}</span>
+        </li>
+        `);
+        html = `
+        <div class="legend">
+        <div class="legend-title">${title || "" }</div>
+        <div class="legend-items"><ul>${rows.join("\n")}</ul></div>
+        </div>
+        `;
+    }
 
 
     const legendPanel = document.createElement("div");

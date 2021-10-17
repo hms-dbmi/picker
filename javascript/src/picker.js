@@ -232,10 +232,8 @@ HTMLWidgets.widget({
     const renderValue = (x) => {
 
      
-      if (x.gridLegendItems !== null) {
-        gridLegend = createLegendPanel(el, x.gridLegendItems);
-        gridLegend.style.display = 'none';
-      }
+      gridLegend = createLegendPanel(el, x.gridLegendItems);
+      gridLegend.style.display = 'none';
 
       if (!x.showControls) {
         lasso.style.display = "none";
