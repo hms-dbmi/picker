@@ -54,6 +54,10 @@
 .picker-widget-ctrl-bottom-left { bottom: 10px; left: 10px; }
 .picker-widget-ctrl-bottom-right { bottom: 10px; right: 10px; }
 
+.legend {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
 .legend-title {
   margin-bottom: 10px;
 }
