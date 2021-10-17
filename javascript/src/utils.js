@@ -34,10 +34,35 @@ export const convertColor = (specifier) => {
 
 export const createControlPanel = (widgetElement) => {
     const ctrlPanel = document.createElement("div");
-    ctrlPanel.classList.add(CLASS_NAME_CTRL_GROUP, `${CLASS_NAME_CTRL}-top-right`);
+    ctrlPanel.classList.add(CLASS_NAME_CTRL_GROUP, `${CLASS_NAME_CTRL}-top-right`, 'no-pointer');
     widgetElement.appendChild(ctrlPanel);
     return ctrlPanel;
 }
+
+
+export function createLegendPanel(widgetElement, items, title) {
+    const rows = items.map(item => `
+    <li>
+    <span class="point-mark" style="background-color:${item.color};border: 1px solid black;"></span>
+    <span>${item.label}</span>
+    </li>
+    `);
+    const html = `
+    <div class="legend">
+    <div class="legend-title">${title || "" }</div>
+    <div class="legend-items"><ul>${rows.join("\n")}</ul></div>
+    </div>
+    `;
+
+
+    const legendPanel = document.createElement("div");
+    legendPanel.innerHTML = html;
+
+    legendPanel.classList.add(CLASS_NAME_CTRL_GROUP, `${CLASS_NAME_CTRL}-bottom-right`);
+    widgetElement.appendChild(legendPanel);
+    return legendPanel;
+}
+
 
 export const addControl = (html, parent, style) => {
     const ctrl = document.createElement("div");
@@ -48,6 +73,7 @@ export const addControl = (html, parent, style) => {
     parent.appendChild(ctrl);
     return ctrl;
 }
+
 
 // Get the HTMLWidgets object
 export const getWidget = (id) => HTMLWidgets.find("#" + id)

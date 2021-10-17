@@ -46,6 +46,14 @@ if (require(repel)) {
 exp <- scales::rescale(exp, c(0, 1))
 expression_colors <- scales::seq_gradient_pal('#f5f5f5', 'blue')(exp)
 
+# legend to show when grid is visible
+grid_legend_items = list(
+    list(color = '#FF0000', label = '↑'),
+    list(color = '#0000FF', label = '↓'),
+    list(color = '#989898', label = 'p < .05'),
+    list(color = '#EAEAEA', label = 'p ≥ .05')
+)
+
 ui = shinyUI(fluidPage(
     tags$head(tags$style(".picker {border: 1px solid #ddd; margin: 20px 0;}")),
     shiny::column(
@@ -77,7 +85,14 @@ server = function(input, output) {
     
     # render pickers
     output$clusters <- renderPicker(
-        picker(coords, cluster_colors, labels, label_coords, polygons, text_props = text_props, point_color_polygons = 'white')
+        picker(coords, 
+        cluster_colors,
+        labels, 
+        label_coords,
+        polygons, 
+        text_props = text_props,
+        point_color_polygons = 'white',
+        grid_legend_items = grid_legend_items)
     )
     output$expression <- renderPicker(
         picker(coords,

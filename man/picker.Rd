@@ -12,6 +12,7 @@ picker(
   polygons = NULL,
   point_color_polygons = NULL,
   show_controls = TRUE,
+  grid_legend_items = NULL,
   scatter_props = NULL,
   deck_props = NULL,
   text_props = NULL,

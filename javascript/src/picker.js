@@ -8,6 +8,7 @@ import layers from './layers.svg';
 import "./default.css";
 import {
   createControlPanel,
+  createLegendPanel,
   addControl,
   convertColor, getWidget, debounce,
   rescaleCoords,
@@ -31,7 +32,7 @@ HTMLWidgets.widget({
     // define shared variables for this instance
     // =========================================
     var coords, scaledCoords, xFrom, yFrom, xTo, yTo,  scaledPolygons, pointColorPolygons,
-    scatterPlotLayerProps, textLayerProps, deckProps, polygonLayerProps;
+    scatterPlotLayerProps, textLayerProps, deckProps, polygonLayerProps, gridLegend;
 
     // Pass data back to R in 'shinyMode'
     const sendDataToShiny = (data, suffix) => {
@@ -66,14 +67,16 @@ HTMLWidgets.widget({
     const toggleGrid = () => {
       grid.firstElementChild.classList.toggle('active')
       deckgl.showGrid = !deckgl.showGrid;
-
+      
       if (deckgl.showGrid && pointColorPolygons !== null) {
         getFillColor = convertColor(pointColorPolygons);
         deckgl.colors = pointColorPolygons;
-
+        gridLegend.style.display = 'block';
+        
       } else {
         deckgl.colors = deckgl.origColors;
         getFillColor = (d, { index }) => deckgl.colors[index];
+        gridLegend.style.display = 'none';
       }
 
       sendDataToShiny(deckgl.showGrid, '_show_grid');
@@ -81,6 +84,7 @@ HTMLWidgets.widget({
     }
 
     // create controls & attach listeners
+
     const ctrlPanel = createControlPanel(el);
     const view = addControl(`<button class="btn-picker">${nearMe}</button>`, ctrlPanel)
     const lasso = addControl(`<button class="btn-picker">${selectionLasso}</button>`, ctrlPanel)
@@ -226,6 +230,12 @@ HTMLWidgets.widget({
 
     // what gets called from R on re-render
     const renderValue = (x) => {
+
+     
+      if (x.gridLegendItems !== null) {
+        gridLegend = createLegendPanel(el, x.gridLegendItems);
+        gridLegend.style.display = 'none';
+      }
 
       if (!x.showControls) {
         lasso.style.display = "none";
