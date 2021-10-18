@@ -229,14 +229,19 @@ HTMLWidgets.widget({
       deckgl.setProps({ layers, getCursor, getTooltip, ...deckProps });
     }
 
-    // what gets called from R on re-render
+    // gets called from R on first render and from proxy updates
     const renderValue = (x) => {
 
      
-      gridLegend = createLegendPanel(el, x.gridLegendItems);
-      deckgl.title = createTitlePanel(el, x.title);
+      //  create title and grid legend once
+      if (!deckgl.title) {
+        deckgl.title = createTitlePanel(el, x.title);
+      }
 
-      gridLegend.style.display = 'none';
+      if (!gridLegend) {
+        gridLegend = createLegendPanel(el, x.gridLegendItems);
+        gridLegend.style.display = 'none';
+      }
 
       if (!x.showControls) {
         lasso.style.display = "none";
