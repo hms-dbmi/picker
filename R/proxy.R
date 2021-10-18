@@ -35,7 +35,7 @@ picker_proxy <- function(shinyId, session = shiny::getDefaultReactiveDomain()) {
 #' @inheritParams picker
 #' @seealso \link{picker_proxy}
 #' @export
-update_picker <- function(proxy, view_state = NULL, colors = NULL, labels = NULL, label_coords = NULL, polygons = NULL, show_grid = NULL) {
+update_picker <- function(proxy, view_state = NULL, colors = NULL, labels = NULL, label_coords = NULL, polygons = NULL, show_grid = NULL, title = NULL) {
   if (!inherits(proxy, "picker_proxy")) {
     stop("This function must be used with a picker_proxy object.", call. = FALSE)
   }
@@ -46,6 +46,7 @@ update_picker <- function(proxy, view_state = NULL, colors = NULL, labels = NULL
                    initialViewState = view_state,
                    colors = colors,
                    labels = labels,
+                   title = title,
                    labelCoords = label_coords,
                    polygons = polygons,
                    showGrid = show_grid)

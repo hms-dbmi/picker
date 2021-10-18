@@ -42,7 +42,7 @@ export const createControlPanel = (widgetElement) => {
 
 export function createLegendPanel(widgetElement, items, title) {
     var html = '';
-
+    
     if (items) {
         const rows = items.map(item => `
         <li>
@@ -57,14 +57,26 @@ export function createLegendPanel(widgetElement, items, title) {
         </div>
         `;
     }
-
-
+    
+    
     const legendPanel = document.createElement("div");
     legendPanel.innerHTML = html;
-
+    
     legendPanel.classList.add(CLASS_NAME_CTRL_GROUP, `${CLASS_NAME_CTRL}-bottom-right`);
     widgetElement.appendChild(legendPanel);
     return legendPanel;
+}
+
+export function createTitlePanel(widgetElement, title) {
+    var html = '';
+    if (title) html = title;
+    
+    const titlePanel = document.createElement("div");
+    titlePanel.innerHTML = html;
+    
+    titlePanel.classList.add(CLASS_NAME_CTRL_GROUP, `${CLASS_NAME_CTRL}-top-left`, 'title');
+    widgetElement.appendChild(titlePanel);
+    return titlePanel;
 }
 
 

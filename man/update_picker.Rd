@@ -11,7 +11,8 @@ update_picker(
   labels = NULL,
   label_coords = NULL,
   polygons = NULL,
-  show_grid = NULL
+  show_grid = NULL,
+  title = NULL
 )
 }
 \arguments{

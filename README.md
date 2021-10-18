@@ -82,14 +82,21 @@ server = function(input, output) {
         update_picker(expression_proxy, input$clusters_view_state)
     })
     
+    # change title between grid/scatterplot
+    observeEvent(input$clusters_show_grid, {
+        title <- ifelse(input$clusters_show_grid, 'Δ CELLS', '')
+        update_picker(clusters_proxy, title = title)
+    })
+    
     
     # render pickers
     output$clusters <- renderPicker(
-        picker(coords, 
+        picker(
+        coords, 
         cluster_colors,
         labels, 
-        label_coords,
-        polygons, 
+        label_coords = label_coords,
+        polygons = polygons, 
         text_props = text_props,
         point_color_polygons = 'white',
         grid_legend_items = grid_legend_items)

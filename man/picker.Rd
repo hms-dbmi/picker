@@ -8,6 +8,7 @@ picker(
   coords,
   colors,
   labels,
+  title = NULL,
   label_coords = NULL,
   polygons = NULL,
   point_color_polygons = NULL,

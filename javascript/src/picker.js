@@ -9,6 +9,7 @@ import "./default.css";
 import {
   createControlPanel,
   createLegendPanel,
+  createTitlePanel,
   addControl,
   convertColor, getWidget, debounce,
   rescaleCoords,
@@ -233,6 +234,8 @@ HTMLWidgets.widget({
 
      
       gridLegend = createLegendPanel(el, x.gridLegendItems);
+      deckgl.title = createTitlePanel(el, x.title);
+
       gridLegend.style.display = 'none';
 
       if (!x.showControls) {
@@ -327,6 +330,10 @@ HTMLWidgets.widget({
 
         if (obj.showGrid && !deckInstance.showGrid) {
           deckInstance.grid.click();
+        }
+
+        if (obj.title !== null) {
+          deckInstance.title.innerHTML = obj.title;
         }
 
       });

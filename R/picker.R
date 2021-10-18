@@ -24,7 +24,7 @@
 #' @return renders html widget
 #' @export
 #'
-picker <- function(coords, colors, labels, label_coords = NULL, polygons = NULL, point_color_polygons = NULL, show_controls = TRUE, grid_legend_items = NULL, scatter_props = NULL, deck_props = NULL, text_props = NULL, polygon_props = NULL, xrange = NULL, yrange = NULL, xaxs = 0.04, yaxs = 0.04,  width = NULL, height = NULL, elementId = NULL) {
+picker <- function(coords, colors, labels, title = NULL, label_coords = NULL, polygons = NULL, point_color_polygons = NULL, show_controls = TRUE, grid_legend_items = NULL, scatter_props = NULL, deck_props = NULL, text_props = NULL, polygon_props = NULL, xrange = NULL, yrange = NULL, xaxs = 0.04, yaxs = 0.04,  width = NULL, height = NULL, elementId = NULL) {
 
   colnames(coords) <- c('x', 'y')
 
@@ -45,6 +45,7 @@ picker <- function(coords, colors, labels, label_coords = NULL, polygons = NULL,
     yrange = yrange,
     colors = colors,
     labels = labels,
+    title = title,
     labelCoords = label_coords,
     polygons = polygons,
     pointColorPolygons = point_color_polygons,
