@@ -8,7 +8,6 @@ import layers from './layers.svg';
 import "./default.css";
 import {
   createControlPanel,
-  createLegendPanel,
   createTitlePanel,
   addControl,
   convertColor, getWidget, debounce,
@@ -16,7 +15,10 @@ import {
   rescalePolygons,
   polygonsToContours,
   INITIAL_VIEW_STATE,
-  DEFAULT_CHAR_SET
+  DEFAULT_CHAR_SET,
+  getGridLegendHTML,
+  getScaleLegendHTML,
+  createLegendPanel
 } from "./utils";
 
 const {Deck, OrthographicView, COORDINATE_SYSTEM, ScatterplotLayer, TextLayer, PolygonLayer} = deck;
@@ -73,11 +75,13 @@ HTMLWidgets.widget({
         getFillColor = convertColor(pointColorPolygons);
         deckgl.colors = pointColorPolygons;
         gridLegend.style.display = 'block';
+        deckgl.scaleLegend.style.display = 'none';
         
       } else {
         deckgl.colors = deckgl.origColors;
         getFillColor = (d, { index }) => deckgl.colors[index];
         gridLegend.style.display = 'none';
+        deckgl.scaleLegend.style.display = 'block';
       }
 
       sendDataToShiny(deckgl.showGrid, '_show_grid');
@@ -239,8 +243,15 @@ HTMLWidgets.widget({
       }
 
       if (!gridLegend) {
-        gridLegend = createLegendPanel(el, x.gridLegendItems);
+        gridLegend = createLegendPanel(el);
+        gridLegend.innerHTML = getGridLegendHTML(x.gridLegendItems);
         gridLegend.style.display = 'none';
+      }
+
+      if (!deckgl.scaleLegend) {
+        deckgl.scaleLegend = createLegendPanel(el);
+        deckgl.scaleLegend.innerHTML = getScaleLegendHTML(x.scaleLegendProps);
+        deckgl.scaleLegend.style.display = 'block';
       }
 
       if (!x.showControls) {
@@ -339,6 +350,11 @@ HTMLWidgets.widget({
 
         if (obj.title !== null) {
           deckInstance.title.innerHTML = obj.title;
+        }
+
+        if (obj.scaleLegendProps !== null) {
+          deckInstance.scaleLegend.innerHTML = getScaleLegendHTML(obj.scaleLegendProps);
+          deckInstance.scaleLegend.style.display = 'block';
         }
 
       });

@@ -14,6 +14,7 @@ picker(
   point_color_polygons = NULL,
   show_controls = TRUE,
   grid_legend_items = NULL,
+  scale_legend_props = NULL,
   scatter_props = NULL,
   deck_props = NULL,
   text_props = NULL,
@@ -42,6 +43,8 @@ that define the polygons to draw and 'color' that defines the color.}
 \item{point_color_polygons}{character, a color to make points when polygons are shown e.g. \code{'white'}.}
 
 \item{show_controls}{Should control panel be shown? Default is \code{TRUE}.}
+
+\item{scale_legend_props}{optional props to render a gradient scale legend. For example: \code{list(colorHigh = 'red', colorLow = 'gray', high = 4, low = 0)}}
 
 \item{scatter_props}{Props passed to deck.gl \href{https://deck.gl/docs/api-reference/layers/scatterplot-layer}{ScatterplotLayer}.}
 

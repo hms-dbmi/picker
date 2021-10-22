@@ -26,6 +26,9 @@ library(picker)
 # load example data
 load(system.file('extdata/pbmcs.rda', package = 'picker'))
 
+# setup gradient scale legend
+scale_legend_props <- list(colorHigh = 'blue', colorLow = '#f5f5f5', high = round(max(exp)), low = min(exp))
+
 text_props <- list()
 
 if (require(repel)) {
@@ -101,11 +104,13 @@ server = function(input, output) {
         point_color_polygons = 'white',
         grid_legend_items = grid_legend_items)
     )
+    
     output$expression <- renderPicker(
         picker(coords,
                expression_colors,
                labels,
-               show_controls = FALSE)
+               show_controls = FALSE,
+               scale_legend_props = scale_legend_props)
     )
 }
 

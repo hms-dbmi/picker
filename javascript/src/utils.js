@@ -39,8 +39,17 @@ export const createControlPanel = (widgetElement) => {
     return ctrlPanel;
 }
 
+export function createLegendPanel(widgetElement) {
+    const legendPanel = document.createElement("div");
+    
+    legendPanel.classList.add(CLASS_NAME_CTRL_GROUP, `${CLASS_NAME_CTRL}-bottom-right`);
+    widgetElement.appendChild(legendPanel);
+    return legendPanel;
+}
+// legendPanel.innerHTML = html;
 
-export function createLegendPanel(widgetElement, items, title) {
+
+export function getGridLegendHTML(items, title) {
     var html = '';
     
     if (items) {
@@ -57,14 +66,26 @@ export function createLegendPanel(widgetElement, items, title) {
         </div>
         `;
     }
+
+    return html;
+}
+
+export function getScaleLegendHTML(props) {
+    var html = '';
     
+    if (props) {
+        html = `
+        <div class="legend scale">
+            <div class="gradient" style="background-image: linear-gradient(${props.colorHigh}, ${props.colorLow});"></div>
+            <div class="range">
+                <div>${props.high}</div>
+                <div>${props.low}</div>
+            </div>
+        </div>
+        `;
+    }
     
-    const legendPanel = document.createElement("div");
-    legendPanel.innerHTML = html;
-    
-    legendPanel.classList.add(CLASS_NAME_CTRL_GROUP, `${CLASS_NAME_CTRL}-bottom-right`);
-    widgetElement.appendChild(legendPanel);
-    return legendPanel;
+    return html;
 }
 
 export function createTitlePanel(widgetElement, title) {

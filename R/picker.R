@@ -9,6 +9,8 @@
 #'    that define the polygons to draw and 'color' that defines the color.
 #' @param point_color_polygons character, a color to make points when polygons are shown e.g. \code{'white'}.
 #' @param show_controls Should control panel be shown? Default is \code{TRUE}.
+#' @param scale_legend_props optional props to render a gradient scale legend.
+#'   For example: \code{list(colorHigh = 'red', colorLow = 'gray', high = 4, low = 0)}
 #' @param scatter_props Props passed to deck.gl \href{https://deck.gl/docs/api-reference/layers/scatterplot-layer}{ScatterplotLayer}.
 #' @param deck_props  Props passed to deck.gl \href{https://deck.gl/docs/api-reference/core/deck}{Deck} instance.
 #' @param text_props Props passed to deck.gl \href{https://deck.gl/docs/api-reference/layers/text-layer}{TextLayer}.
@@ -24,7 +26,7 @@
 #' @return renders html widget
 #' @export
 #'
-picker <- function(coords, colors, labels, title = NULL, label_coords = NULL, polygons = NULL, point_color_polygons = NULL, show_controls = TRUE, grid_legend_items = NULL, scatter_props = NULL, deck_props = NULL, text_props = NULL, polygon_props = NULL, xrange = NULL, yrange = NULL, xaxs = 0.04, yaxs = 0.04,  width = NULL, height = NULL, elementId = NULL) {
+picker <- function(coords, colors, labels, title = NULL, label_coords = NULL, polygons = NULL, point_color_polygons = NULL, show_controls = TRUE, grid_legend_items = NULL, scale_legend_props = NULL, scatter_props = NULL, deck_props = NULL, text_props = NULL, polygon_props = NULL, xrange = NULL, yrange = NULL, xaxs = 0.04, yaxs = 0.04,  width = NULL, height = NULL, elementId = NULL) {
 
   colnames(coords) <- c('x', 'y')
 
@@ -51,6 +53,7 @@ picker <- function(coords, colors, labels, title = NULL, label_coords = NULL, po
     pointColorPolygons = point_color_polygons,
     showControls = show_controls,
     gridLegendItems = grid_legend_items,
+    scaleLegendProps = scale_legend_props,
     scatterPlotLayerProps = scatter_props,
     textLayerProps = text_props,
     polygonLayerProps = polygon_props,
