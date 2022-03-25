@@ -30,6 +30,8 @@ update_picker(
 that define the polygons to draw and 'color' that defines the color.}
 
 \item{show_grid}{set to \code{TRUE} to turn on grid layer.}
+
+\item{title}{character string to show in top left of plot.}
 }
 \description{
 Send commands to a picker instance in a \code{Shiny} app

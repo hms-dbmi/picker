@@ -1,3 +1,5 @@
 ^picker\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+javascript/*
+^picker\.gif$

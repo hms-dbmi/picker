@@ -1,5 +1,5 @@
 Package: picker
-Title: Pick Data Points From Deck.gl Scatterplot
+Title: Pick Data Points from Deck.gl Scatterplot
 Version: 0.2.4
 Authors@R: 
     person(given = "Alex",
@@ -12,3 +12,10 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Imports:
+    htmlwidgets (>= 1.5.3)
+Suggests:
+    shiny,
+    scales
+Depends: 
+    R (>= 4.0)
