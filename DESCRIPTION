@@ -6,7 +6,9 @@ Authors@R:
            family = "Pickering",
            role = c("aut", "cre"),
            email = "alexvpickering@gmail.com")
-Description: Pick data using a nebula.gl lasso selector from a deck.gl scatterplot.
+Description: Performant interactive scatterplot for ~ 1 million points. Zoom, pan,
+    and pick points. Includes tooltips, labels, a grid overlay, legend, and
+    coupled interactions across multiple plots.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
