@@ -13,6 +13,12 @@ deck to modify}
 \item{session}{the \code{Shiny} session object to which the picker widget belongs;
 usually the default value will suffice.}
 }
+\value{
+a \code{picker_proxy} object that can be updated with \code{update_picker}.
+}
 \description{
 Creates a picker-like object that can be used to update a picker object that has already been rendered.
+}
+\seealso{
+\link{update_picker}
 }

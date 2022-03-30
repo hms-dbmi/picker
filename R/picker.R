@@ -180,6 +180,7 @@ picker <- function(coords, colors, labels, title = NULL, label_coords = NULL, po
 #' @param quoted Is \code{expr} a quoted expression (with \code{quote()})? This
 #'   is useful if you want to save an expression in a variable.
 #'
+#' @inherit htmlwidgets::shinyWidgetOutput return
 #' @name picker-shiny
 #'
 #' @export
@@ -188,6 +189,7 @@ pickerOutput <- function(outputId, width = '100%', height = '400px'){
 }
 
 #' @rdname picker-shiny
+#' @inherit htmlwidgets::shinyRenderWidget return
 #' @export
 renderPicker <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted

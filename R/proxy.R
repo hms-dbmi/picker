@@ -6,6 +6,8 @@
 #'   deck to modify
 #' @param session the \code{Shiny} session object to which the picker widget belongs;
 #'   usually the default value will suffice.
+#' @return a \code{picker_proxy} object that can be updated with \code{update_picker}.
+#' @seealso \link{update_picker}
 #' @export
 picker_proxy <- function(shinyId, session = shiny::getDefaultReactiveDomain()) {
   if (is.null(session)) {
@@ -29,10 +31,11 @@ picker_proxy <- function(shinyId, session = shiny::getDefaultReactiveDomain()) {
 
 #' Send commands to a picker instance in a \code{Shiny} app
 #'
-#' @param proxy picker proxy object
+#' @param proxy picker proxy object created by \code{picker_proxy}.
 #' @param view_state view state from other picker input (optional).
 #' @param show_grid set to \code{TRUE} to turn on grid layer.
 #' @inheritParams picker
+#' @return The original \code{proxy} object. Called for side effects.
 #' @seealso \link{picker_proxy}
 #' @export
 update_picker <- function(proxy, view_state = NULL, colors = NULL, labels = NULL, label_coords = NULL, polygons = NULL, show_grid = NULL, title = NULL) {

@@ -16,7 +16,7 @@ update_picker(
 )
 }
 \arguments{
-\item{proxy}{picker proxy object}
+\item{proxy}{picker proxy object created by \code{picker_proxy}.}
 
 \item{view_state}{view state from other picker input (optional).}
 
@@ -32,6 +32,9 @@ that define the polygons to draw and 'color' that defines the color.}
 \item{show_grid}{set to \code{TRUE} to turn on grid layer.}
 
 \item{title}{character string to show in top left of plot.}
+}
+\value{
+The original \code{proxy} object. Called for side effects.
 }
 \description{
 Send commands to a picker instance in a \code{Shiny} app
