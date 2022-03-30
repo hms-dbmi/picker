@@ -1,6 +1,6 @@
 Package: picker
 Title: Pick Data Points from a Deck.gl Scatterplot
-Version: 0.2.5
+Version: 0.2.6
 Authors@R: 
     person(given = "Alex",
            family = "Pickering",
