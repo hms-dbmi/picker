@@ -14,10 +14,10 @@
 #'   square and \code{label} for legend items. Only visible for grid display.
 #' @param scale_legend_props optional props to render a gradient scale legend.
 #'   For example: \code{list(colorHigh = 'red', colorLow = 'gray', high = 4, low = 0)}
-#' @param scatter_props Props passed to deck.gl \href{https://deck.gl/docs/api-reference/layers/scatterplot-layer}{ScatterplotLayer}.
-#' @param deck_props  Props passed to deck.gl \href{https://deck.gl/docs/api-reference/core/deck}{Deck} instance.
-#' @param text_props Props passed to deck.gl \href{https://deck.gl/docs/api-reference/layers/text-layer}{TextLayer}.
-#' @param polygon_props Props passed to deck.gl \href{https://deck.gl/docs/api-reference/layers/polygon-layer}{PolygonLayer}.
+#' @param scatter_props Props passed to deck.gl \href{https://deck.gl/docs/api-reference/layers/scatterplot-layer/}{ScatterplotLayer}.
+#' @param deck_props  Props passed to deck.gl \href{https://deck.gl/docs/api-reference/core/deck/}{Deck} instance.
+#' @param text_props Props passed to deck.gl \href{https://deck.gl/docs/api-reference/layers/text-layer/}{TextLayer}.
+#' @param polygon_props Props passed to deck.gl \href{https://deck.gl/docs/api-reference/layers/polygon-layer/}{PolygonLayer}.
 #' @param xrange range of x-values. Default is \code{range(coords[,1])}.
 #' @param yrange range of y-values. Default is \code{range(coords[,2])}.
 #' @param xaxs the fraction to extend \code{xrange} on either side. Default is 0.04.
@@ -32,95 +32,94 @@
 #'
 #' @examples
 #'
-#' library(shiny)
-#' library(picker)
+#' if (interactive()) {
+#'   library(shiny)
+#'   library(picker)
 #'
-#' # load example data
-#' load(system.file('extdata/pbmcs.rda', package = 'picker'))
+#'   # load example data
+#'   load(system.file('extdata/pbmcs.rda', package = 'picker'))
 #'
-#' # setup gradient scale legend
-#' scale_legend_props <- list(
-#'   colorHigh = 'blue',
-#'   colorLow = '#f5f5f5',
-#'   high = round(max(exp)),
-#'   low = min(exp))
+#'   # setup gradient scale legend
+#'   scale_legend_props <- list(
+#'     colorHigh = 'blue',
+#'     colorLow = '#f5f5f5',
+#'     high = round(max(exp)),
+#'     low = min(exp))
 #'
-#' text_props <- list()
+#'   text_props <- list()
 #'
-#' # get colors for gene expression
-#' exp <- scales::rescale(exp, c(0, 1))
-#' expression_colors <- scales::seq_gradient_pal('#f5f5f5', 'blue')(exp)
+#'   # get colors for gene expression
+#'   exp <- scales::rescale(exp, c(0, 1))
+#'   expression_colors <- scales::seq_gradient_pal('#f5f5f5', 'blue')(exp)
 #'
-#' # legend to show when grid is visible
-#' grid_legend_items = list(
-#'   list(color = '#FF0000', label = '\U2191'),
-#'   list(color = '#0000FF', label = '\U2193'),
-#'   list(color = '#989898', label = 'p \U003C .05'),
-#'   list(color = '#EAEAEA', label = 'p \U2265 .05')
-#' )
-#'
-#' ui = shinyUI(fluidPage(
-#'   tags$head(tags$style(".picker {border: 1px solid #ddd; margin: 20px 0;}")),
-#'   shiny::column(
-#'     width = 6,
-#'     pickerOutput('clusters', width = '100%', height = '400px'),
-#'     pickerOutput('expression', width = '100%', height = '400px'),
-#'     verbatimTextOutput('selected')
-#'   )
-#' ))
-#'
-#' server = function(input, output) {
-#'
-#'   # show selected output
-#'   output$selected <- renderPrint({
-#'     input$clusters_selected_points
-#'   })
-#'
-#'   # coordinate views (zoom/pan)
-#'   clusters_proxy <- picker_proxy('clusters')
-#'   observeEvent(input$expression_view_state, {
-#'     update_picker(clusters_proxy, input$expression_view_state)
-#'   })
-#'
-#'   expression_proxy <- picker_proxy('expression')
-#'   observeEvent(input$clusters_view_state, {
-#'     update_picker(expression_proxy, input$clusters_view_state)
-#'   })
-#'
-#'   # change title between grid/scatterplot
-#'   observeEvent(input$clusters_show_grid, {
-#'     title <- ifelse(input$clusters_show_grid, '\U0394 CELLS', '')
-#'     update_picker(clusters_proxy, title = title)
-#'   })
-#'
-#'
-#'   # render pickers
-#'   output$clusters <- renderPicker(
-#'     picker(
-#'       coords,
-#'       cluster_colors,
-#'       labels,
-#'       label_coords = label_coords,
-#'       polygons = polygons,
-#'       text_props = text_props,
-#'       point_color_polygons = 'white',
-#'       grid_legend_items = grid_legend_items)
+#'   # legend to show when grid is visible
+#'   grid_legend_items = list(
+#'     list(color = '#FF0000', label = '\U2191'),
+#'     list(color = '#0000FF', label = '\U2193'),
+#'     list(color = '#989898', label = 'p \U003C .05'),
+#'     list(color = '#EAEAEA', label = 'p \U2265 .05')
 #'   )
 #'
-#'   output$expression <- renderPicker(
-#'     picker(coords,
-#'            expression_colors,
-#'            labels,
-#'            show_controls = FALSE,
-#'            scale_legend_props = scale_legend_props)
-#'   )
+#'   ui = shinyUI(fluidPage(
+#'     tags$head(tags$style(".picker {border: 1px solid #ddd; margin: 20px 0;}")),
+#'     shiny::column(
+#'       width = 6,
+#'       pickerOutput('clusters', width = '100%', height = '400px'),
+#'       pickerOutput('expression', width = '100%', height = '400px'),
+#'       verbatimTextOutput('selected')
+#'     )
+#'   ))
+#'
+#'   server = function(input, output) {
+#'
+#'     # show selected output
+#'     output$selected <- renderPrint({
+#'       input$clusters_selected_points
+#'     })
+#'
+#'     # coordinate views (zoom/pan)
+#'     clusters_proxy <- picker_proxy('clusters')
+#'     observeEvent(input$expression_view_state, {
+#'       update_picker(clusters_proxy, input$expression_view_state)
+#'     })
+#'
+#'     expression_proxy <- picker_proxy('expression')
+#'     observeEvent(input$clusters_view_state, {
+#'       update_picker(expression_proxy, input$clusters_view_state)
+#'     })
+#'
+#'     # change title between grid/scatterplot
+#'     observeEvent(input$clusters_show_grid, {
+#'       title <- ifelse(input$clusters_show_grid, '\U0394 CELLS', '')
+#'       update_picker(clusters_proxy, title = title)
+#'     })
+#'
+#'
+#'     # render pickers
+#'     output$clusters <- renderPicker(
+#'       picker(
+#'         coords,
+#'         cluster_colors,
+#'         labels,
+#'         label_coords = label_coords,
+#'         polygons = polygons,
+#'         text_props = text_props,
+#'         point_color_polygons = 'white',
+#'         grid_legend_items = grid_legend_items)
+#'     )
+#'
+#'     output$expression <- renderPicker(
+#'       picker(coords,
+#'              expression_colors,
+#'              labels,
+#'              show_controls = FALSE,
+#'              scale_legend_props = scale_legend_props)
+#'     )
+#'   }
+#'
+#'   shinyApp(ui = ui, server = server, options = list(launch.browser = TRUE))
 #' }
-#'
-#' \dontrun{
-#' shinyApp(ui = ui, server = server, options = list(launch.browser = TRUE))
-#' }
-#'
-#'
+
 picker <- function(coords, colors, labels, title = NULL, label_coords = NULL, polygons = NULL, point_color_polygons = NULL, show_controls = TRUE, grid_legend_items = NULL, scale_legend_props = NULL, scatter_props = NULL, deck_props = NULL, text_props = NULL, polygon_props = NULL, xrange = NULL, yrange = NULL, xaxs = 0.04, yaxs = 0.04,  width = NULL, height = NULL, elementId = NULL) {
 
   colnames(coords) <- c('x', 'y')
@@ -153,7 +152,7 @@ picker <- function(coords, colors, labels, title = NULL, label_coords = NULL, po
     textLayerProps = text_props,
     polygonLayerProps = polygon_props,
     deckProps = deck_props
-    )
+  )
 
 
   # create widget
