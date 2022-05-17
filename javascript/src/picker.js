@@ -72,8 +72,16 @@ HTMLWidgets.widget({
       deckgl.showGrid = !deckgl.showGrid;
       
       if (deckgl.showGrid && pointColorPolygons !== null) {
-        getFillColor = convertColor(pointColorPolygons);
-        deckgl.colors = pointColorPolygons;
+
+        if (Array.isArray(pointColorPolygons)) {
+          var polygonColors =  pointColorPolygons.map((color) => convertColor(color));
+          deckgl.colors = polygonColors;
+          getFillColor = (d, { index }) => deckgl.colors[index];
+        } else {
+          deckgl.colors = pointColorPolygons;
+          getFillColor = convertColor(pointColorPolygons);
+        }
+
         gridLegend.style.display = 'block';
         deckgl.scaleLegend.style.display = 'none';
         
