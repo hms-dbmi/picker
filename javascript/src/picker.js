@@ -71,15 +71,15 @@ HTMLWidgets.widget({
       grid.firstElementChild.classList.toggle('active')
       deckgl.showGrid = !deckgl.showGrid;
       
-      if (deckgl.showGrid && pointColorPolygons !== null) {
+      if (deckgl.showGrid && deckgl.pointColorPolygons !== null) {
 
-        if (Array.isArray(pointColorPolygons)) {
-          var polygonColors =  pointColorPolygons.map((color) => convertColor(color));
+        if (Array.isArray(deckgl.pointColorPolygons)) {
+          var polygonColors =  deckgl.pointColorPolygons.map((color) => convertColor(color));
           deckgl.colors = polygonColors;
           getFillColor = (d, { index }) => deckgl.colors[index];
         } else {
-          deckgl.colors = pointColorPolygons;
-          getFillColor = convertColor(pointColorPolygons);
+          deckgl.colors = deckgl.pointColorPolygons;
+          getFillColor = convertColor(deckgl.pointColorPolygons);
         }
 
         gridLegend.style.display = 'block';
@@ -241,8 +241,10 @@ HTMLWidgets.widget({
       deckgl.setProps({ layers, getCursor, getTooltip, ...deckProps });
     }
 
-    // gets called from R on first render and from proxy updates
+    // gets called from R on first render
     const renderValue = (x) => {
+
+      // FIRST RENDER
 
      
       //  create title and grid legend once
@@ -279,7 +281,7 @@ HTMLWidgets.widget({
       scaledCoords = rescaleCoords(coords, xTo, yTo, xFrom, yFrom)
       deckgl.scaledLabelCoords = rescaleCoords(deckgl.labelCoords, xTo, yTo, xFrom, yFrom)
 
-      pointColorPolygons = x.pointColorPolygons;
+      deckgl.pointColorPolygons = x.pointColorPolygons;
       polygonLayerProps = x.polygonLayerProps;
 
       if (x.polygons !== null) {
@@ -307,7 +309,7 @@ HTMLWidgets.widget({
     // a method to expose our deck to the outside
     const getDeck = () => deckgl;
 
-    // handlers to update via proxy
+    // PROXY UPDATES
     // NOTE: updates/calls in here must reference correct deck instance
     if (HTMLWidgets.shinyMode) {
       Shiny.addCustomMessageHandler('proxythis', function(obj) {
@@ -345,6 +347,16 @@ HTMLWidgets.widget({
           deckInstance.grid.style.display = "block";
 
           deckInstance.render();
+        }
+
+        if (obj.pointColorPolygons !== null) {
+          deckInstance.pointColorPolygons = obj.pointColorPolygons;
+
+          if (deckInstance.showGrid) {
+            var polygonColors =  deckInstance.pointColorPolygons.map((color) => convertColor(color));
+            deckInstance.colors = polygonColors;
+            deckInstance.render();
+          }
         }
 
         if (obj.labels !== null) {

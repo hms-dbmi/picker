@@ -9,6 +9,7 @@
 #' @param polygons data.frame containing at minimum columns 'x1', 'x2', 'y1', 'y2',
 #'    that define the polygons to draw and 'color' that defines the color.
 #' @param point_color_polygons character, a color to make points when polygons are shown e.g. \code{'white'}.
+#'   Can also be a vector of colors, one for each row of \code{coords}.
 #' @param show_controls Should control panel be shown? Default is \code{TRUE}.
 #' @param grid_legend_items list of lists with \code{color} hex for legend
 #'   square and \code{label} for legend items. Only visible for grid display.

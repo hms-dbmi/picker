@@ -11,6 +11,7 @@ update_picker(
   labels = NULL,
   label_coords = NULL,
   polygons = NULL,
+  point_color_polygons = NULL,
   show_grid = NULL,
   title = NULL
 )
@@ -28,6 +29,9 @@ update_picker(
 
 \item{polygons}{data.frame containing at minimum columns 'x1', 'x2', 'y1', 'y2',
 that define the polygons to draw and 'color' that defines the color.}
+
+\item{point_color_polygons}{character, a color to make points when polygons are shown e.g. \code{'white'}.
+Can also be a vector of colors, one for each row of \code{coords}.}
 
 \item{show_grid}{set to \code{TRUE} to turn on grid layer.}
 
