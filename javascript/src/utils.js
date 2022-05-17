@@ -41,7 +41,7 @@ export const createControlPanel = (widgetElement) => {
 
 export function createLegendPanel(widgetElement) {
     const legendPanel = document.createElement("div");
-    
+
     legendPanel.classList.add(CLASS_NAME_CTRL_GROUP, `${CLASS_NAME_CTRL}-bottom-right`);
     widgetElement.appendChild(legendPanel);
     return legendPanel;
@@ -51,11 +51,11 @@ export function createLegendPanel(widgetElement) {
 
 export function getGridLegendHTML(items, title) {
     var html = '';
-    
+
     if (items) {
         const rows = items.map(item => `
         <li>
-        <span class="point-mark" style="background-color:${item.color};border: 1px solid black;"></span>
+        <span class="point-mark" style="background:${item.color};border: 1px solid black;"></span>
         <span>${item.label}</span>
         </li>
         `);
@@ -72,7 +72,7 @@ export function getGridLegendHTML(items, title) {
 
 export function getScaleLegendHTML(props) {
     var html = '';
-    
+
     if (props) {
         html = `
         <div class="legend scale">
@@ -84,17 +84,17 @@ export function getScaleLegendHTML(props) {
         </div>
         `;
     }
-    
+
     return html;
 }
 
 export function createTitlePanel(widgetElement, title) {
     var html = '';
     if (title) html = title;
-    
+
     const titlePanel = document.createElement("div");
     titlePanel.innerHTML = html;
-    
+
     titlePanel.classList.add(CLASS_NAME_CTRL_GROUP, `${CLASS_NAME_CTRL}-top-left`, 'title');
     widgetElement.appendChild(titlePanel);
     return titlePanel;
@@ -105,7 +105,7 @@ export const addControl = (html, parent, style) => {
     const ctrl = document.createElement("div");
     ctrl.classList.add(CLASS_NAME_CTRL);
     if (style) ctrl.style.cssText = style;
-    
+
     ctrl.innerHTML = html;
     parent.appendChild(ctrl);
     return ctrl;
@@ -132,27 +132,27 @@ export const debounce = (func, wait, immediate) => {
 };
 
 export const rescaleCoords = (coords, xTo, yTo, xFrom, yFrom) => {
-    
+
     // pre-calc scale factors
     var xScale = (xTo[1] - xTo[0]) / (xFrom[1] - xFrom[0]);
     var yScale = (yTo[1] - yTo[0]) / (yFrom[1] - yFrom[0]);
-    
+
     // need non-shallow copy for deck.gl dataComparator
     var scaledCoords = coords.map((coord) => ({
         ...coord,
         x: xScale * (coord.x - xFrom[0]) + xTo[0],
         y: yScale * (coord.y - yFrom[0]) + yTo[0]
     }))
-    
+
     return scaledCoords;
 }
 
 export const rescalePolygons = (polygons, xTo, yTo, xFrom, yFrom) => {
-    
+
     // pre-calc scale factors
     var xScale = (xTo[1] - xTo[0]) / (xFrom[1] - xFrom[0]);
     var yScale = (yTo[1] - yTo[0]) / (yFrom[1] - yFrom[0]);
-    
+
     // need non-shallow copy for deck.gl dataComparator
     var scaledPolygons = polygons.map((poly) => ({
         ...poly,
@@ -161,23 +161,23 @@ export const rescalePolygons = (polygons, xTo, yTo, xFrom, yFrom) => {
         y1: yScale * (poly.y1 - yFrom[0]) + yTo[0],
         y2: yScale * (poly.y2 - yFrom[0]) + yTo[0]
     }))
-    
+
     return scaledPolygons;
 }
 
 
 export const polygonsToContours = (polygons) => {
-    
+
     const contours = polygons.map((poly) => ({
         ...poly,
         contour: [
-            [poly.x1, poly.y1], 
+            [poly.x1, poly.y1],
             [poly.x1, poly.y2],
             [poly.x2, poly.y2],
             [poly.x2, poly.y1]
         ]
     }))
-    
+
     return contours;
-    
+
 }
